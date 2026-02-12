@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Super AI</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#0f172a;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+header{
+  background:#111827;
+  color:white;
+  text-align:center;
+  padding:15px;
+  font-weight:bold;
+  font-size:18px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+}
+
+#chat{
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.message{
+  max-width:80%;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:14px;
+  line-height:1.4;
+}
+
+.user{
+  align-self:flex-end;
+  background:#2563eb;
+  color:white;
+  border-bottom-right-radius:4px;
+}
+
+.bot{
+  align-self:flex-start;
+  background:#1f2937;
+  color:white;
+  border-bottom-left-radius:4px;
+}
+
+footer{
+  display:flex;
+  padding:10px;
+  background:#111827;
+  gap:8px;
+}
+
+#input{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  font-size:14px;
+}
+
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(0.95);
+}
+</style>
+</head>
+
+<body>
+
+<header>Nova Super AI</header>
+
+<div id="chat"></div>
+
+<footer>
+  <input id="input" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+</footer>
+
+<script>
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+
+function addMessage(text, sender){
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.innerText = text;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function botReply(userText){
+  // simple demo replies
+  let reply = "I am Nova Super AI 🤖";
+
+  if(userText.toLowerCase().includes("hello")) reply = "Hello bhai! Kaise help karu?";
+  else if(userText.toLowerCase().includes("name")) reply = "Mera naam Nova Super AI hai.";
+  else if(userText.toLowerCase().includes("help")) reply = "Main aapki madad karne ke liye yahan hoon.";
+
+  setTimeout(() => addMessage(reply, "bot"), 500);
+}
+
+function sendMessage(){
+  const text = input.value.trim();
+  if(text === "") return;
+
+  addMessage(text, "user");
+  input.value = "";
+  botReply(text);
+}
+
+input.addEventListener("keypress", function(e){
+  if(e.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
