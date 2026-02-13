@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,45 +9,58 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:#0b0f19;
+  background:linear-gradient(180deg,#0b1020,#0e1628);
   color:white;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
 }
-
-.app{
-  width:100%;
-  max-width:420px;
-  height:100vh;
-  background:#111827;
-  display:flex;
-  flex-direction:column;
-}
-
 header{
-  padding:15px;
   text-align:center;
+  padding:18px;
   font-weight:bold;
-  background:#0f172a;
+  font-size:20px;
+}
+.page{padding:15px;}
+h3{
+  margin:20px 0 10px;
+  opacity:.8;
+  font-size:14px;
+  letter-spacing:1px;
 }
 
-.page{flex:1;padding:15px;overflow:auto;}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.card{
+  background:rgba(255,255,255,0.04);
+  border-radius:18px;
+  padding:20px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+.icon{
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.title{font-weight:600;}
+.sub{font-size:12px;opacity:.6;margin-top:4px;}
+
 button{
   background:#2563eb;
   border:none;
   padding:12px;
-  margin:5px 0;
+  margin-top:15px;
   width:100%;
-  border-radius:10px;
+  border-radius:12px;
   color:white;
-  font-size:16px;
 }
 input{
   width:100%;
   padding:12px;
-  margin:5px 0;
+  margin:8px 0;
   border-radius:10px;
   border:none;
 }
@@ -59,10 +72,9 @@ input{
 </head>
 
 <body>
-<div class="app">
+
 <header>Nova Super AI</header>
 <div class="page" id="page"></div>
-</div>
 
 <script>
 let page="login";
@@ -78,26 +90,63 @@ el.innerHTML=`
 <input id="email" placeholder="Email">
 <input id="pass" placeholder="Password">
 <button onclick="doLogin()">Login</button>
-<p onclick="page='signup';render()">Create account</p>
-`;
-}
-
-if(page==="signup"){
-el.innerHTML=`
-<h2>Signup</h2>
-<button onclick="page='login';render()">Back</button>
 `;
 }
 
 if(page==="home"){
 el.innerHTML=`
-<h2>Welcome ${user}</h2>
-<button onclick="page='chat';render()">AI Chat</button>
-<button onclick="page='voice';render()">Voice Buddy</button>
-<button onclick="page='canvas';render()">Dream Canvas</button>
-<button onclick="page='fact';render()">Fact Finder</button>
-<button onclick="page='guide';render()">Global Guide</button>
-<button onclick="page='chef';render()">Chef AI</button>
+<h2 style="margin-bottom:10px;">Welcome ${user}</h2>
+
+<h3>AI CHAT</h3>
+<div class="grid">
+  <div class="card" onclick="page='chat';render()">
+    <div class="icon">🤖</div>
+    <div class="title">AI Chat</div>
+    <div class="sub">Smart Assistant</div>
+  </div>
+
+  <div class="card" onclick="page='voice';render()">
+    <div class="icon">🎤</div>
+    <div class="title">Voice Buddy</div>
+    <div class="sub">Talk with AI</div>
+  </div>
+</div>
+
+<h3>CREATION</h3>
+<div class="grid">
+  <div class="card" onclick="page='canvas';render()">
+    <div class="icon">✨</div>
+    <div class="title">Dream Canvas</div>
+    <div class="sub">Image AI</div>
+  </div>
+
+  <div class="card">
+    <div class="icon">🎬</div>
+    <div class="title">Magic Motion</div>
+    <div class="sub">Video AI</div>
+  </div>
+</div>
+
+<h3>INFORMATION</h3>
+<div class="grid">
+  <div class="card" onclick="page='fact';render()">
+    <div class="icon">🔎</div>
+    <div class="title">Fact Finder</div>
+  </div>
+
+  <div class="card" onclick="page='guide';render()">
+    <div class="icon">🗺️</div>
+    <div class="title">Global Guide</div>
+  </div>
+</div>
+
+<h3>LIFESTYLE</h3>
+<div class="grid">
+  <div class="card" onclick="page='chef';render()">
+    <div class="icon">🍽️</div>
+    <div class="title">Chef AI</div>
+  </div>
+</div>
 `;
 }
 
@@ -120,21 +169,21 @@ if(page==="voice"){
 el.innerHTML=`
 <h2>Voice Buddy</h2>
 <button onclick="startVoice()">🎤 Speak</button>
-<button onclick="page='chat';render()">Go Chat</button>
+<button onclick="page='home';render()">Back</button>
 `;
 }
 
 if(page==="canvas"){
-el.innerHTML=`<h2>Dream Canvas</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
+el.innerHTML=`<h2>Dream Canvas</h2><button onclick="page='home';render()">Back</button>`;
 }
 if(page==="fact"){
-el.innerHTML=`<h2>Fact Finder</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
+el.innerHTML=`<h2>Fact Finder</h2><button onclick="page='home';render()">Back</button>`;
 }
 if(page==="guide"){
-el.innerHTML=`<h2>Global Guide</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
+el.innerHTML=`<h2>Global Guide</h2><button onclick="page='home';render()">Back</button>`;
 }
 if(page==="chef"){
-el.innerHTML=`<h2>Chef AI</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
+el.innerHTML=`<h2>Chef AI</h2><button onclick="page='home';render()">Back</button>`;
 }
 }
 
