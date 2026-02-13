@@ -1,140 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova Super AI</title>
+import React, { useState } from "react";
 
-<style>
-body{
-  margin:0;
-  font-family: Arial, Helvetica, sans-serif;
-  background:#0f172a;
-  display:flex;
-  flex-direction:column;
-  height:100vh;
+export default function NovaAI(){
+
+const [page,setPage] = useState("login");
+const [chat,setChat] = useState([]);
+const [msg,setMsg] = useState("");
+const [user,setUser] = useState(null);
+
+// ================= AUTH =================
+function login(){
+  if(userEmail && userPass){
+    setUser(userEmail);
+    setPage("home");
+  }
 }
 
-header{
-  background:#111827;
-  color:white;
-  text-align:center;
-  padding:15px;
-  font-weight:bold;
-  font-size:18px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+// ================= AI DEMO =================
+async function askAI(text){
+  // yaha future me real API lagega
+  return "Nova reply for: " + text;
 }
 
-#chat{
-  flex:1;
-  overflow-y:auto;
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+async function send(){
+  if(!msg) return;
+  const reply = await askAI(msg);
+  setChat([...chat,{u:msg,b:reply}]);
+  setMsg("");
 }
 
-.message{
-  max-width:80%;
-  padding:10px 12px;
-  border-radius:12px;
-  font-size:14px;
-  line-height:1.4;
+// ================= VOICE =================
+function startVoice(){
+ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+ const rec = new SpeechRecognition();
+ rec.onresult = (e)=>{
+   setMsg(e.results[0][0].transcript);
+ };
+ rec.start();
 }
 
-.user{
-  align-self:flex-end;
-  background:#2563eb;
-  color:white;
-  border-bottom-right-radius:4px;
+// ================= PAGES =================
+if(page==="login"){
+  var userEmail,userPass;
+  return(
+    <div className="p-5">
+      <h2>Nova AI Login</h2>
+      <input placeholder="email" onChange={e=>userEmail=e.target.value}/>
+      <input placeholder="password" onChange={e=>userPass=e.target.value}/>
+      <button onClick={login}>Login</button>
+      <p onClick={()=>setPage("signup")}>Create account</p>
+    </div>
+  );
 }
 
-.bot{
-  align-self:flex-start;
-  background:#1f2937;
-  color:white;
-  border-bottom-left-radius:4px;
+if(page==="signup"){
+  return(
+    <div className="p-5">
+      <h2>Signup</h2>
+      <button onClick={()=>setPage("login")}>Back to login</button>
+    </div>
+  );
 }
 
-footer{
-  display:flex;
-  padding:10px;
-  background:#111827;
-  gap:8px;
+if(page==="home"){
+  return(
+    <div className="p-5">
+      <h2>Welcome {user}</h2>
+
+      <button onClick={()=>setPage("chat")}>AI Chat</button>
+      <button onClick={()=>setPage("voice")}>Voice Buddy</button>
+      <button onClick={()=>setPage("canvas")}>Dream Canvas</button>
+      <button onClick={()=>setPage("fact")}>Fact Finder</button>
+      <button onClick={()=>setPage("guide")}>Global Guide</button>
+      <button onClick={()=>setPage("chef")}>Chef AI</button>
+    </div>
+  );
 }
 
-#input{
-  flex:1;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-  font-size:14px;
+if(page==="chat"){
+  return(
+    <div className="p-5">
+      <h2>AI Chat</h2>
+
+      {chat.map((c,i)=>(
+        <div key={i}>
+          <p>You: {c.u}</p>
+          <p>Nova: {c.b}</p>
+        </div>
+      ))}
+
+      <input value={msg} onChange={e=>setMsg(e.target.value)}/>
+      <button onClick={send}>Send</button>
+      <button onClick={()=>setPage("home")}>Back</button>
+    </div>
+  );
 }
 
-button{
-  padding:10px 15px;
-  border:none;
-  border-radius:10px;
-  background:#2563eb;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+if(page==="voice"){
+  return(
+    <div className="p-5">
+      <h2>Voice Buddy</h2>
+      <button onClick={startVoice}>🎤 Speak</button>
+      <button onClick={()=>setPage("chat")}>Go to Chat</button>
+    </div>
+  );
 }
 
-button:active{
-  transform:scale(0.95);
-}
-</style>
-</head>
-
-<body>
-
-<header>Nova Super AI</header>
-
-<div id="chat"></div>
-
-<footer>
-  <input id="input" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-</footer>
-
-<script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
-
-function addMessage(text, sender){
-  const msg = document.createElement("div");
-  msg.classList.add("message", sender);
-  msg.innerText = text;
-  chat.appendChild(msg);
-  chat.scrollTop = chat.scrollHeight;
+if(page==="canvas"){
+  return(
+    <div className="p-5">
+      <h2>Dream Canvas</h2>
+      <p>Image generation API future me connect hogi.</p>
+      <button onClick={()=>setPage("home")}>Back</button>
+    </div>
+  );
 }
 
-function botReply(userText){
-  // simple demo replies
-  let reply = "I am Nova Super AI 🤖";
-
-  if(userText.toLowerCase().includes("hello")) reply = "Hello bhai! Kaise help karu?";
-  else if(userText.toLowerCase().includes("name")) reply = "Mera naam Nova Super AI hai.";
-  else if(userText.toLowerCase().includes("help")) reply = "Main aapki madad karne ke liye yahan hoon.";
-
-  setTimeout(() => addMessage(reply, "bot"), 500);
+if(page==="fact"){
+  return(
+    <div className="p-5">
+      <h2>Fact Finder</h2>
+      <p>Search / knowledge API yaha lagega.</p>
+      <button onClick={()=>setPage("home")}>Back</button>
+    </div>
+  );
 }
 
-function sendMessage(){
-  const text = input.value.trim();
-  if(text === "") return;
-
-  addMessage(text, "user");
-  input.value = "";
-  botReply(text);
+if(page==="guide"){
+  return(
+    <div className="p-5">
+      <h2>Global Guide</h2>
+      <p>Maps / travel AI future me.</p>
+      <button onClick={()=>setPage("home")}>Back</button>
+    </div>
+  );
 }
 
-input.addEventListener("keypress", function(e){
-  if(e.key === "Enter") sendMessage();
-});
-</script>
+if(page==="chef"){
+  return(
+    <div className="p-5">
+      <h2>Chef AI</h2>
+      <p>Food photo → recipe system future me.</p>
+      <button onClick={()=>setPage("home")}>Back</button>
+    </div>
+  );
+}
 
-</body>
-</html>
+}
