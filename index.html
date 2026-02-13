@@ -1,148 +1,171 @@
-import React, { useState } from "react";
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Super AI</title>
 
-export default function NovaAI(){
-
-const [page,setPage] = useState("login");
-const [chat,setChat] = useState([]);
-const [msg,setMsg] = useState("");
-const [user,setUser] = useState(null);
-
-// ================= AUTH =================
-function login(){
-  if(userEmail && userPass){
-    setUser(userEmail);
-    setPage("home");
-  }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  background:#0b0f19;
+  color:white;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-// ================= AI DEMO =================
-async function askAI(text){
-  // yaha future me real API lagega
-  return "Nova reply for: " + text;
+.app{
+  width:100%;
+  max-width:420px;
+  height:100vh;
+  background:#111827;
+  display:flex;
+  flex-direction:column;
 }
 
-async function send(){
-  if(!msg) return;
-  const reply = await askAI(msg);
-  setChat([...chat,{u:msg,b:reply}]);
-  setMsg("");
+header{
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+  background:#0f172a;
 }
 
-// ================= VOICE =================
-function startVoice(){
- const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
- const rec = new SpeechRecognition();
- rec.onresult = (e)=>{
-   setMsg(e.results[0][0].transcript);
- };
- rec.start();
+.page{flex:1;padding:15px;overflow:auto;}
+button{
+  background:#2563eb;
+  border:none;
+  padding:12px;
+  margin:5px 0;
+  width:100%;
+  border-radius:10px;
+  color:white;
+  font-size:16px;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin:5px 0;
+  border-radius:10px;
+  border:none;
 }
 
-// ================= PAGES =================
+.msg{margin:8px 0;padding:10px;border-radius:10px;}
+.you{background:#1f2937;}
+.bot{background:#2563eb;}
+</style>
+</head>
+
+<body>
+<div class="app">
+<header>Nova Super AI</header>
+<div class="page" id="page"></div>
+</div>
+
+<script>
+let page="login";
+let user=null;
+let chat=[];
+
+function render(){
+const el=document.getElementById("page");
+
 if(page==="login"){
-  var userEmail,userPass;
-  return(
-    <div className="p-5">
-      <h2>Nova AI Login</h2>
-      <input placeholder="email" onChange={e=>userEmail=e.target.value}/>
-      <input placeholder="password" onChange={e=>userPass=e.target.value}/>
-      <button onClick={login}>Login</button>
-      <p onClick={()=>setPage("signup")}>Create account</p>
-    </div>
-  );
+el.innerHTML=`
+<h2>Login</h2>
+<input id="email" placeholder="Email">
+<input id="pass" placeholder="Password">
+<button onclick="doLogin()">Login</button>
+<p onclick="page='signup';render()">Create account</p>
+`;
 }
 
 if(page==="signup"){
-  return(
-    <div className="p-5">
-      <h2>Signup</h2>
-      <button onClick={()=>setPage("login")}>Back to login</button>
-    </div>
-  );
+el.innerHTML=`
+<h2>Signup</h2>
+<button onclick="page='login';render()">Back</button>
+`;
 }
 
 if(page==="home"){
-  return(
-    <div className="p-5">
-      <h2>Welcome {user}</h2>
-
-      <button onClick={()=>setPage("chat")}>AI Chat</button>
-      <button onClick={()=>setPage("voice")}>Voice Buddy</button>
-      <button onClick={()=>setPage("canvas")}>Dream Canvas</button>
-      <button onClick={()=>setPage("fact")}>Fact Finder</button>
-      <button onClick={()=>setPage("guide")}>Global Guide</button>
-      <button onClick={()=>setPage("chef")}>Chef AI</button>
-    </div>
-  );
+el.innerHTML=`
+<h2>Welcome ${user}</h2>
+<button onclick="page='chat';render()">AI Chat</button>
+<button onclick="page='voice';render()">Voice Buddy</button>
+<button onclick="page='canvas';render()">Dream Canvas</button>
+<button onclick="page='fact';render()">Fact Finder</button>
+<button onclick="page='guide';render()">Global Guide</button>
+<button onclick="page='chef';render()">Chef AI</button>
+`;
 }
 
 if(page==="chat"){
-  return(
-    <div className="p-5">
-      <h2>AI Chat</h2>
-
-      {chat.map((c,i)=>(
-        <div key={i}>
-          <p>You: {c.u}</p>
-          <p>Nova: {c.b}</p>
-        </div>
-      ))}
-
-      <input value={msg} onChange={e=>setMsg(e.target.value)}/>
-      <button onClick={send}>Send</button>
-      <button onClick={()=>setPage("home")}>Back</button>
-    </div>
-  );
+el.innerHTML=`
+<h2>AI Chat</h2>
+<div id="chatbox"></div>
+<input id="msg" placeholder="Type message">
+<button onclick="send()">Send</button>
+<button onclick="page='home';render()">Back</button>
+`;
+const box=document.getElementById("chatbox");
+chat.forEach(c=>{
+  box.innerHTML+=`<div class="msg you">You: ${c.u}</div>`;
+  box.innerHTML+=`<div class="msg bot">Nova: ${c.b}</div>`;
+});
 }
 
 if(page==="voice"){
-  return(
-    <div className="p-5">
-      <h2>Voice Buddy</h2>
-      <button onClick={startVoice}>🎤 Speak</button>
-      <button onClick={()=>setPage("chat")}>Go to Chat</button>
-    </div>
-  );
+el.innerHTML=`
+<h2>Voice Buddy</h2>
+<button onclick="startVoice()">🎤 Speak</button>
+<button onclick="page='chat';render()">Go Chat</button>
+`;
 }
 
 if(page==="canvas"){
-  return(
-    <div className="p-5">
-      <h2>Dream Canvas</h2>
-      <p>Image generation API future me connect hogi.</p>
-      <button onClick={()=>setPage("home")}>Back</button>
-    </div>
-  );
+el.innerHTML=`<h2>Dream Canvas</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
 }
-
 if(page==="fact"){
-  return(
-    <div className="p-5">
-      <h2>Fact Finder</h2>
-      <p>Search / knowledge API yaha lagega.</p>
-      <button onClick={()=>setPage("home")}>Back</button>
-    </div>
-  );
+el.innerHTML=`<h2>Fact Finder</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
 }
-
 if(page==="guide"){
-  return(
-    <div className="p-5">
-      <h2>Global Guide</h2>
-      <p>Maps / travel AI future me.</p>
-      <button onClick={()=>setPage("home")}>Back</button>
-    </div>
-  );
+el.innerHTML=`<h2>Global Guide</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
 }
-
 if(page==="chef"){
-  return(
-    <div className="p-5">
-      <h2>Chef AI</h2>
-      <p>Food photo → recipe system future me.</p>
-      <button onClick={()=>setPage("home")}>Back</button>
-    </div>
-  );
+el.innerHTML=`<h2>Chef AI</h2><p>Future API.</p><button onclick="page='home';render()">Back</button>`;
+}
 }
 
+function doLogin(){
+const e=document.getElementById("email").value;
+const p=document.getElementById("pass").value;
+if(e && p){
+user=e;
+page="home";
+render();
 }
+}
+
+function send(){
+const m=document.getElementById("msg").value;
+if(!m) return;
+chat.push({u:m,b:"Nova reply for: "+m});
+render();
+}
+
+function startVoice(){
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const rec = new SpeechRecognition();
+rec.onresult = (e)=>{
+  document.getElementById("msg").value = e.results[0][0].transcript;
+};
+rec.start();
+}
+
+render();
+</script>
+
+</body>
+</html>
